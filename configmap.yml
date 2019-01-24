@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitlab-runner
+  namespace: gitlab
+data:
+  config.toml: |
+    concurrent = 4
+
+    [[runners]]
+      name = "kube-test"
+      url = "https://my-gitlab.com/ci"
+      Token = "..." #Leave it as is. Update it after the runner’s registration
+      executor = "kubernetes"
+      cache_dir = "/.m2/repository/"
+      [runners.kubernetes]
+        namespace = "gitlab"
+        privileged = true
+        [[runners.kubernetes.volumes.pvc]]
+          name = "m2-pv-claim"
+          mount_path = "/.m2/repository/"
